@@ -118,7 +118,8 @@ func (c *TCPConn) Close() error {
 func (c *TCPConn) Write(data []byte) (int, error) {
 	// Calculate how big the message is, using a consistent header size.
 	// Append the size to the message, so now it has a header
-	c.outgoingDataBuffer = append(intToByteArray(int64(len(data)), c.headerByteSize), data...)
+	//c.outgoingDataBuffer = append(intToByteArray(int64(len(data)), c.headerByteSize), data...)
+	c.outgoingDataBuffer = append(int64ToByteArray(int64(len(data)), c.headerByteSize), data...)
 
 	toWriteLen := len(c.outgoingDataBuffer)
 
@@ -196,7 +197,9 @@ func (c *TCPConn) Read(b []byte) (int, error) {
 		return hLength, err
 	}
 	// Decode it
-	msgLength, bytesParsed := byteArrayToUInt32(c.incomingHeaderBuffer)
+	//msgLength, bytesParsed := byteArrayToUInt32(c.incomingHeaderBuffer)
+	msgLength, bytesParsed := byteArrayToInt64(c.incomingHeaderBuffer)
+
 	if bytesParsed == 0 {
 		// "Buffer too small"
 		c.Close()
